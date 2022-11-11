@@ -64,7 +64,8 @@ SelectionTool::SelectionTool()
   selecting_(false),
   sel_start_x_(0),
   sel_start_y_(0),
-  moving_(false)
+  moving_(false),
+  qos_profile_(5)
 {
   shortcut_key_ = 's';
   access_all_keys_ = true;
@@ -78,6 +79,23 @@ SelectionTool::~SelectionTool()
 void SelectionTool::onInitialize()
 {
   move_tool_->initialize(context_);
+  updateTopic();
+}
+
+void SelectionTool::updateTopic()
+{
+  rclcpp::Node::SharedPtr raw_node =
+      context_->getRosNodeAbstraction().lock()->get_raw_node();
+  // TODO(anhosi, wjwwood): replace with abstraction for publishers once available
+  publisher_ = raw_node->
+      template create_publisher<sensor_msgs::msg::PointCloud2>(
+      "/selected_points", qos_profile_);
+  clock_ = raw_node->get_clock();
+}
+
+void SelectionTool::publishSelection(const sensor_msgs::msg::PointCloud2 & cloud) const
+{
+  publisher_->publish(cloud);
 }
 
 void SelectionTool::activate()
@@ -152,6 +170,7 @@ int SelectionTool::processMouseEvent(rviz_common::ViewportMouseEvent & event)
         event.x,
         event.y,
         type);
+
 
       selecting_ = false;
     }

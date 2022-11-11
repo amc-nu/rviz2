@@ -127,6 +127,7 @@ void PointCloudSelectionHandler::createProperties(
       addAdditionalProperties(parent, index, message);
     }
   }
+  cloud_info_->message_;
 }
 
 void PointCloudSelectionHandler::destroyProperties(

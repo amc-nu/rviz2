@@ -94,7 +94,7 @@ public:
   void setBoxSize(float size) {box_size_ = size;}
 
   bool hasSelections() {return !boxes_.empty();}
-
+  CloudInfo * cloud_info_;
 private:
   typedef std::set<uint64_t> S_int;
 
@@ -144,7 +144,6 @@ private:
     const std::string & name,
     float val) const;
 
-  CloudInfo * cloud_info_;
   QHash<IndexAndMessage, rviz_common::properties::Property *> property_hash_;
   float box_size_;
 
