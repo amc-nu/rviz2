@@ -72,6 +72,10 @@ find_package(tf2_ros REQUIRED)
 find_package(urdf REQUIRED)
 find_package(visualization_msgs REQUIRED)
 
+find_package(PCL REQUIRED COMPONENTS common)
+find_package(PCL REQUIRED)
+find_package(pcl_conversions REQUIRED)
+
 set(rviz_default_plugins_headers_to_moc
   include/rviz_default_plugins/displays/axes/axes_display.hpp
   include/rviz_default_plugins/displays/camera/camera_display.hpp
@@ -220,11 +224,14 @@ target_include_directories(rviz_default_plugins PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
   ${Qt5Widgets_INCLUDE_DIRS}
+  ${PCL_INCLUDE_DIRS}
+  ${PCL_COMMON_INCLUDE_DIRS}
 )
 
 target_link_libraries(rviz_default_plugins PUBLIC
   rviz_ogre_vendor::OgreMain
   rviz_ogre_vendor::OgreOverlay
+  ${PCL_LIBRARIES}
 )
 
 # Causes the visibility macros to use dllexport rather than dllimport,

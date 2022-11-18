@@ -49,6 +49,9 @@
   <depend>tf2_ros</depend>
   <depend>urdf</depend>
   <depend>visualization_msgs</depend>
+  <depend>pcl_conversions</depend>
+  <depend>pcl_msgs</depend>
+  <depend>libpcl-all-dev</depend>
 
   <!-- TODO(jacobperron): Replace with ament_lint_common when ament_copyright is working -->
   <test_depend>ament_cmake_cppcheck</test_depend>

@@ -64,8 +64,8 @@ SelectionTool::SelectionTool()
   selecting_(false),
   sel_start_x_(0),
   sel_start_y_(0),
-  moving_(false),
-  qos_profile_(5)
+  moving_(false)
+//  ,  qos_profile_(5)
 {
   shortcut_key_ = 's';
   access_all_keys_ = true;
@@ -84,19 +84,20 @@ void SelectionTool::onInitialize()
 
 void SelectionTool::updateTopic()
 {
-  rclcpp::Node::SharedPtr raw_node =
-      context_->getRosNodeAbstraction().lock()->get_raw_node();
-  // TODO(anhosi, wjwwood): replace with abstraction for publishers once available
-  publisher_ = raw_node->
-      template create_publisher<sensor_msgs::msg::PointCloud2>(
-      "/selected_points", qos_profile_);
-  clock_ = raw_node->get_clock();
+//  rclcpp::Node::SharedPtr raw_node =
+//      context_->getRosNodeAbstraction().lock()->get_raw_node();
+//  // TODO(anhosi, wjwwood): replace with abstraction for publishers once available
+//  publisher_ = raw_node->
+//      template create_publisher<sensor_msgs::msg::PointCloud2>(
+//      "/selected_points", qos_profile_);
+//  clock_ = raw_node->get_clock();
+//  RCLCPP_INFO_STREAM(raw_node->get_logger(),"selected_points published........");
 }
 
-void SelectionTool::publishSelection(const sensor_msgs::msg::PointCloud2 & cloud) const
-{
-  publisher_->publish(cloud);
-}
+//void SelectionTool::publishSelection(const sensor_msgs::msg::PointCloud2 & cloud) const
+//{
+//  publisher_->publish(cloud);
+//}
 
 void SelectionTool::activate()
 {

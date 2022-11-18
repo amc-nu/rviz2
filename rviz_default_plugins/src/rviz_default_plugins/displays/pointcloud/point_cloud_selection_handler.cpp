@@ -69,8 +69,17 @@ PointCloudSelectionHandler::PointCloudSelectionHandler(
   rviz_common::DisplayContext * context)
 : SelectionHandler(context),
   cloud_info_(cloud_info),
-  box_size_(box_size)
+  box_size_(box_size),
+  context_(context),
+  qos_profile_(5)
 {
+  rclcpp::Node::SharedPtr raw_node =
+      context_->getRosNodeAbstraction().lock()->get_raw_node();
+  // TODO(anhosi, wjwwood): replace with abstraction for publishers once available
+  publisher_ = raw_node->
+      template create_publisher<sensor_msgs::msg::PointCloud2>(
+      "/selected_points", qos_profile_);
+  clock_ = raw_node->get_clock();
 }
 
 PointCloudSelectionHandler::~PointCloudSelectionHandler()
@@ -113,9 +122,15 @@ void PointCloudSelectionHandler::createProperties(
 {
   S_int indices = getIndicesOfSelectedPoints(obj);
 
+  sensor_msgs::msg::PointCloud2 selected_cloud;
+
+  pcl::PointCloud<PointXYZIRADT> pcl_cloud;
+  pcl::PointCloud<PointXYZIRADT> selected_pcl_cloud;
+  pcl::fromROSMsg(*(cloud_info_->message_), pcl_cloud);
+
+  size_t i=0;
   for (auto index : indices) {
     const sensor_msgs::msg::PointCloud2::ConstSharedPtr & message = cloud_info_->message_;
-
     IndexAndMessage hash_key(index, message.get());
     if (!property_hash_.contains(hash_key)) {
       rviz_common::properties::Property * parent = createParentPropertyForPoint(
@@ -123,11 +138,18 @@ void PointCloudSelectionHandler::createProperties(
       property_hash_.insert(hash_key, parent);
 
       addPositionProperty(parent, index);
+      std::cout << "Adding point" << index << std::endl;
+      if (index < pcl_cloud.points.size())
+        selected_pcl_cloud.points.emplace_back(pcl_cloud.at(index));
 
       addAdditionalProperties(parent, index, message);
     }
   }
-  cloud_info_->message_;
+
+  pcl::toROSMsg(selected_pcl_cloud, selected_cloud);
+  selected_cloud.header = cloud_info_->message_->header;
+  publisher_->publish(selected_cloud);
+
 }
 
 void PointCloudSelectionHandler::destroyProperties(

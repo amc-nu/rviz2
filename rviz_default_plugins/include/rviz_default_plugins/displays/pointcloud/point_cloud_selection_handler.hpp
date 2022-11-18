@@ -43,7 +43,36 @@
 # include "rviz_common/properties/color_property.hpp"
 # include "rviz_rendering/objects/point_cloud.hpp"
 # include "rviz_default_plugins/visibility_control.hpp"
+
+# include "sensor_msgs/msg/point_cloud2.hpp"
+# include "rclcpp/rclcpp.hpp"
+# include "rclcpp/qos.hpp"
+
+#include <pcl_conversions/pcl_conversions.h>
+#include <pcl/point_types.h>
+#include <pcl/point_cloud.h>
+
 #endif
+
+
+namespace rviz_default_plugins {
+    struct PointXYZIRADT {
+        PCL_ADD_POINT4D;
+        float intensity;
+        uint16_t ring;
+        float azimuth;
+        float distance;
+        uint8_t return_type;
+        double time_stamp;
+
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    } EIGEN_ALIGN16;
+}
+
+POINT_CLOUD_REGISTER_POINT_STRUCT(
+    rviz_default_plugins::PointXYZIRADT,
+(float, x,
+x)(float, y, y)(float, z, z)(float, intensity, intensity)(std::uint16_t, ring, ring)(float, azimuth, azimuth)(float, distance, distance)(std::uint8_t, return_type, return_type)(double, time_stamp, time_stamp))
 
 namespace rviz_default_plugins
 {
@@ -150,6 +179,11 @@ private:
   template<typename T, typename ... Args>
   friend typename std::shared_ptr<T>
   rviz_common::interaction::createSelectionHandler(Args ... arguments);
+
+  rviz_common::DisplayContext * context_;
+  rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher_;
+  rclcpp::Clock::SharedPtr clock_;
+  rclcpp::QoS qos_profile_;
 };
 
 }  // namespace rviz_default_plugins

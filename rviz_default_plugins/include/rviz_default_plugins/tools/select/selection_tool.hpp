@@ -37,9 +37,9 @@
 
 #include "rviz_default_plugins/visibility_control.hpp"
 
-#include "sensor_msgs/msg/point_cloud2.hpp"
-#include "rclcpp/rclcpp.hpp"
-#include "rclcpp/qos.hpp"
+//#include "sensor_msgs/msg/point_cloud2.hpp"
+//#include "rclcpp/rclcpp.hpp"
+//#include "rclcpp/qos.hpp"
 namespace Ogre
 {
 class Viewport;
@@ -79,12 +79,12 @@ private:
 
   bool moving_;
     void updateTopic();
-    void publishSelection(const sensor_msgs::msg::PointCloud2 & cloud) const;
+//    void publishSelection(const sensor_msgs::msg::PointCloud2 & cloud) const;
 
 protected:
-    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher_;
-    rclcpp::Clock::SharedPtr clock_;
-    rclcpp::QoS qos_profile_;
+//    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher_;
+//    rclcpp::Clock::SharedPtr clock_;
+//    rclcpp::QoS qos_profile_;
 };
 
 }  // namespace tools
