@@ -136,10 +136,8 @@ void PointCloudSelectionHandler::createProperties(
   selected_cloud.is_dense = true;
   selected_cloud.width = indices.size();
   selected_cloud.is_bigendian = cloud_info_->message_->is_bigendian;
-  std::cout << "empty cloud\n";
   std::vector<uint8_t> cloud_data;
   cloud_data.resize(indices.size()*cloud_info_->message_->point_step);
-  std::cout << "Created Cloud " << cloud_data.size() << std::endl;
   size_t i=0;
   for (auto index : indices) {
     const sensor_msgs::msg::PointCloud2::ConstSharedPtr & message = cloud_info_->message_;
@@ -152,22 +150,17 @@ void PointCloudSelectionHandler::createProperties(
       addPositionProperty(parent, index);
       addAdditionalProperties(parent, index, message);
 
-      std::cout << "Adding point" << index << std::endl;
-      std::cout << "Data Index of point" << index * message->point_step << std::endl;
-      uint8_t data = cloud_info_->message_->data[index * message->point_step];
-      std::cout << "Data Index of final cloud:" << i * message->point_step << std::endl;
-      std::memcpy(selected_cloud.data.data(), &cloud_data[index * message->point_step], message->point_step);
-      std::cout << "Copied OK\n";
+      auto data = cloud_info_->message_->data.data();
+      std::memcpy(cloud_data.data() + (i * message->point_step),
+                  data + (index * message->point_step),
+                  message->point_step);
       i++;
-      std::cout << "Finished loop\n";
     }
   }
-
-//  pcl::toROSMsg(selected_pcl_cloud, selected_cloud);
-//  sensor_msgs::msg::PointCloud2 publish_cloud;
-//  pcl_conversions::moveFromPCL(pcl_cloud, publish_cloud);
-//  publisher_->publish(publish_cloud);
-
+  selected_cloud.data = std::move(cloud_data);
+  sensor_msgs::msg::PointCloud2 publish_cloud;
+  pcl_conversions::moveFromPCL(selected_cloud, publish_cloud);
+  publisher_->publish(publish_cloud);
 }
 
 void PointCloudSelectionHandler::destroyProperties(
