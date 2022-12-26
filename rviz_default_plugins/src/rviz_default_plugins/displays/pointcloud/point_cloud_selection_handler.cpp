@@ -123,11 +123,6 @@ void PointCloudSelectionHandler::createProperties(
   S_int indices = getIndicesOfSelectedPoints(obj);
 
 
-//  pcl::PointCloud<PointXYZIRADT> pcl_cloud;
-//  pcl::PointCloud<PointXYZIRADT> selected_pcl_cloud;
-//  pcl::fromROSMsg(*(cloud_info_->message_), pcl_cloud);
-
-//
   pcl::PCLPointCloud2 selected_cloud;
   pcl_conversions::toPCL(cloud_info_->message_->header, selected_cloud.header);
   pcl_conversions::toPCL(cloud_info_->message_->fields, selected_cloud.fields);
